@@ -8,9 +8,9 @@
 2. Save it to "CreateNewGithubRelease-APIKey.txt" file you HOME directory, this way it won't be ever committed to repo by accident:
 
 ```code
-Win: C:\Users\<username>
-mac: /Users/<username>
-Lin: <root>/home/<username>
+Win: C:\Users\<username>\CreateNewGithubRelease-APIKey.txt
+mac: /Users/<username>/CreateNewGithubRelease-APIKey.txt
+Lin: <root>/home/<username>/CreateNewGithubRelease-APIKey.txt
 ```
 
 3. Put CreateNewGithubRelease.ps1 and CreateNewGithubRelease.bat inside man mod directory, same where package_mod.bat is
