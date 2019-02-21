@@ -36,6 +36,9 @@ function Get-IEModVersion {
     (( Get-Content $tp2FullPath | Select-String "version ~" ) -split '~' )[1]
 }
 
+# Fix for TLS12
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 $( try { $script:MyInvocation.MyCommand.Path, $script:psISE.CurrentFile.Fullpath, $script:psEditor.GetEditorContext().CurrentFile.Path, $script:dte.ActiveDocument.FullName } catch { $_ } ) | % { $_ | Split-Path -EA 0 | Set-Location }
 
 # Set this to you Personal access token
