@@ -59,14 +59,15 @@ $tp2Version = Get-IEModVersion $tp2FullPath
 $newTagRelease = $tp2Version -replace "\s+",'_'
 
 Write-Host ""
-Write-Host "Github Home: $OrgUser\$repository"
-Write-Host "tp2 VERSION: $tp2Version"
-Write-Host "New Release: $newTagRelease"
+Write-Host " Github link: $OrgUser\$repository"
+Write-Host " tp2 VERSION: $tp2Version"
+Write-Host "Last Release: $newTagRelease"
 Write-Host ""
 
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
 if (  $compare -eq $newTagRelease ) {
-    Write-Host "Release `"$newTagRelease`" already exist"
+    Write-Host "Version $tp2Version Release `"$newTagRelease`" already exist"
+    pause
     break
 }
 
