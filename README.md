@@ -14,9 +14,9 @@ mac: /Users/<username>/CreateNewGithubRelease-APIKey.txt
 Lin: <root>/home/<username>/CreateNewGithubRelease-APIKey.txt
 ```
 
-3. Put CreateNewGithubRelease.ps1 and CreateNewGithubRelease.bat inside man mod directory, same where package_mod.bat is
+4. Put CreateNewGithubRelease.ps1 and CreateNewGithubRelease.bat inside man mod directory, same where package_mod.bat is
 
-4. Prepare assets via package_mod.bat, wait until archives are created with proper names:
+5. Prepare assets via package_mod.bat, wait until archives are created with proper names:
 
 ```code
 CreateNewGithubRelease-$tp2Version.exe
@@ -24,4 +24,4 @@ mac-CreateNewGithubRelease-$tp2Version.tar
 lin-CreateNewGithubRelease-$tp2Version.tar
 ```
 
-5. Run CreateNewGithubRelease.bat
+6. Run CreateNewGithubRelease.bat
