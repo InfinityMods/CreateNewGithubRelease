@@ -4,7 +4,9 @@
 
 <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>
 
-2. Save it to "CreateNewGithubRelease-APIKey.txt" file you HOME directory, this way it won't be ever committed to repo by accident:
+2. Save it to "CreateNewGithubRelease-APIKey.txt" file
+
+3. Move "CreateNewGithubRelease-APIKey.txt" file you HOME directory, this way it won't be ever committed to repo by accident:
 
 ```code
 Win: C:\Users\<username>\CreateNewGithubRelease-APIKey.txt
