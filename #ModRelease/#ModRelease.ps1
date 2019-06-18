@@ -1,5 +1,7 @@
+param($IEModFolder)
 
-function New-GithubReleaseDescription { param($ReleaseDescription)
+function New-GithubReleaseDescription {
+    param($ReleaseDescription)
 
     Add-Type -AssemblyName System.Windows.Forms
     $form = New-Object System.Windows.Forms.Form
@@ -32,7 +34,8 @@ function New-GithubReleaseDescription { param($ReleaseDescription)
     }
 }
 
-function Get-IEModVersion { param($FullName)
+function Get-IEModVersion {
+    param($FullName)
     $regexVersion = New-Object System.Text.RegularExpressions.Regex('.*?VERSION(\s*)(|~"|~|"|)(@.+|.+)("~|"|~|)(|\s*)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
     foreach ($line in [System.IO.File]::ReadLines($FullName)) {
         $line = $line -replace "\/\/(.*)(\n|)"
@@ -47,7 +50,8 @@ function Get-IEModVersion { param($FullName)
     }
 }
 
-function Update-GithubReleaseAsset { param($FullName, $OrgUser, $Repository, $ReleaseID)
+function Update-GithubReleaseAsset {
+    param($FullName, $OrgUser, $Repository, $ReleaseID)
     if ($FullName) {
         # DELETE existing asset with the same name
         $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
@@ -67,10 +71,29 @@ function Update-GithubReleaseAsset { param($FullName, $OrgUser, $Repository, $Re
 # Fix for TLS12
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+# script directory as initial execution location
 $( try { $script:MyInvocation.MyCommand.Path, $script:psISE.CurrentFile.Fullpath, $script:psEditor.GetEditorContext().CurrentFile.Path, $script:dte.ActiveDocument.FullName } catch { $_ } ) | % { $_ | Split-Path -EA 0 | Set-Location }
 
-# Set this to you Personal access token
-$apiKey = Get-Content ".\#ModRelease-Github-Key.txt"
+if ($IEModFolder) {
+    Set-Location $IEModFolder
+} else {
+    Write-Host "Cant determine mod top-level folder."
+    break
+}
+
+if ( ! (Get-Item '..\#ModRelease\#ModRelease-Github-Key.txt' )) {
+    Rename-Item '..\#ModRelease\#ModRelease-Github-Key-Example.txt' '..\#ModRelease\#ModRelease-Github-Key.txt' | Out-Null
+}
+
+# get Personal Access Token
+$apiKey = Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt"
+
+if ($apiKey.Length -ne 40) {
+    Write-Host "API-KEY length is not 40 characters, please check the first line of #ModRelease-Github-Key.txt"
+    pause
+    break
+}
+
 $repository = (Split-Path ( git config --get remote.origin.url ) -Leaf ) -replace '\.git'
 $OrgUser = (Split-Path ( git config --get remote.origin.url ) -Parent ) -replace 'https:\\\\github.com\\'
 $username = git config --get user.name
@@ -81,8 +104,8 @@ $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
 [array]$dataReleases = ( Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get ).tag_name
 
-$tp2File = ( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0]
-$tp2FullPath = (( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0] ).FullName
+$tp2File = ( Get-ChildItem -Path $IEModFolder -Filter *.tp2 -Recurse )[0]
+$tp2FullPath = (( Get-ChildItem -Path $IEModFolder -Filter *.tp2 -Recurse )[0] ).FullName
 $tp2Version = Get-IEModVersion -FullName $tp2FullPath
 $newTagRelease = $tp2Version -replace "\s+", '_'
 
@@ -129,8 +152,6 @@ $Body = @{
     name     = "$($repository) $($newTagRelease)"
     body     = $releaseDescription -join '</br>'
 } | ConvertTo-Json
-
-
 
 $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Body $Body -Method POST
 $json
