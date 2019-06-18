@@ -77,7 +77,7 @@ $( try { $script:MyInvocation.MyCommand.Path, $script:psISE.CurrentFile.Fullpath
 if ($IEModFolder) {
     Set-Location $IEModFolder
 } else {
-    Write-Host "Cant determine mod top-level folder."
+    Write-Host "Cannot determine mod top-level folder."
     break
 }
 
