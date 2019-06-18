@@ -11,16 +11,14 @@
 ## Usage:
 1. Do not create new tag for release, it will be taken from mod version.
 
-2. Commit all file changes, don't leave modified but uncommitted files.
+2. Increase mod version, commit all file changes aka don't leave modified but uncommitted files.
 
-3. Create assets, wait until all packages are created with proper names:
+3. Optionally, create assets, wait until all packages are created with proper names:
 
 ```code
 ModId-$tp2Version.exe
 ModId-$tp2Version.iemp
 ModId-$tp2Version.zip
-mac-ModId-$tp2Version.zip
-lin-ModId-$tp2Version.zip
 ```
 
 4. Run #ModRelease.bat and follow further instructions.
