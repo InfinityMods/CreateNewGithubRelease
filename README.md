@@ -14,7 +14,7 @@ mac: /Users/<username>/Github-API-Key-Release.txt
 Lin: <root>/home/<username>/Github-API-Key-Release.txt
 ```
 
-4. Put #New-GithubRelease.ps1 and #New-GithubRelease.bat inside man mod directory, same where package_mod.bat is
+4. Put #ModRelease.ps1 and #ModRelease.bat inside man mod directory, same where package_mod.bat is
 
 5. Prepare assets via package_mod.bat, wait until archives are created with proper names:
 
@@ -24,4 +24,4 @@ mac-ModId-$tp2Version.zip
 lin-ModId-$tp2Version.zip
 ```
 
-6. Run #New-GithubRelease.bat
+6. Run #ModRelease.bat
