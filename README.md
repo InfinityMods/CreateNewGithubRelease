@@ -4,20 +4,16 @@
 
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>.
 
-2. Save it to "Github-API-Key-Release.txt" file.
+2. Save it to "#ModRelease-Github-Key-Example.txt" file and rename it to #ModRelease-Github-Key.txt
 
-3. Move "Github-API-Key-Release.txt" file you HOME directory, this way it won't be ever committed to repo by accident:
-
-```code
-Win: C:\Users\<username>\Github-API-Key-Release.txt
-mac: /Users/<username>/Github-API-Key-Release.txt
-Lin: <root>/home/<username>/Github-API-Key-Release.txt
-```
-
-4. Put #ModRelease.ps1 and #ModRelease.bat inside mod top-level directory.
+3. Put #ModRelease.bat inside mod top-level directory, reffer to included mod example.
 
 ## Usage:
-1. Prepare assets, wait until packages are created with proper names:
+1. Do not create new tag for release, it will be taken from mod version.
+
+2. Commit all file changes, don't leave modified but uncommitted files.
+
+3. Create assets, wait until all packages are created with proper names:
 
 ```code
 ModId-$tp2Version.exe
@@ -27,4 +23,4 @@ mac-ModId-$tp2Version.zip
 lin-ModId-$tp2Version.zip
 ```
 
-2. Run #ModRelease.bat and follow further instructions.
+4. Run #ModRelease.bat and follow further instructions.
