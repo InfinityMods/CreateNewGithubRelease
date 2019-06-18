@@ -1,4 +1,4 @@
-# Script for creating new Github release wiet optional assets
+# Script for creating new Github release with optional assets
 
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time
 
