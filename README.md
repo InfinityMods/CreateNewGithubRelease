@@ -2,9 +2,9 @@
 
 ## Installation:
 
-1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>
+1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>.
 
-2. Save it to "Github-API-Key-Release.txt" file
+2. Save it to "Github-API-Key-Release.txt" file.
 
 3. Move "Github-API-Key-Release.txt" file you HOME directory, this way it won't be ever committed to repo by accident:
 
@@ -14,7 +14,7 @@ mac: /Users/<username>/Github-API-Key-Release.txt
 Lin: <root>/home/<username>/Github-API-Key-Release.txt
 ```
 
-4. Put #ModRelease.ps1 and #ModRelease.bat inside mod top-level directory
+4. Put #ModRelease.ps1 and #ModRelease.bat inside mod top-level directory.
 
 ## Usage:
 1. Prepare assets, wait until packages are created with proper names:
@@ -27,4 +27,4 @@ mac-ModId-$tp2Version.zip
 lin-ModId-$tp2Version.zip
 ```
 
-2. Run #ModRelease.bat and follow instructions
+2. Run #ModRelease.bat and follow further instructions.
