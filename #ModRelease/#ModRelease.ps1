@@ -138,10 +138,11 @@ git push origin "$newTagRelease" --force
 
 $gitLastTag = git describe --tags
 $gitPrevTag = git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1)
-$releaseDescription = git log --format=%B "$gitLastTag"..."$gitPrevTag" | ? { $_ -match '\w' }
+$dataGitLog = git log --format=%B "$gitLastTag"..."$gitPrevTag" | ? { $_ -match '\w' }
+$dataGitLog = $dataGitLog -join "`r`n"
 
-if ( [System.Environment]::OSVersion.Platform -eq 'Win32NT') {
-    $releaseDescription = New-GithubReleaseDescription -ReleaseDescription $releaseDescription
+if ( [System.Environment]::OSVersion.Platform -eq 'Win32NT' ) {
+    $releaseDescription = New-GithubReleaseDescription -ReleaseDescription $dataGitLog
     if ( $null -eq $releaseDescription ) { break }
 } else {
     $releaseDescription = Read-Host -Prompt 'Release description'
