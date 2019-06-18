@@ -2,7 +2,7 @@
 
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time
 
-<https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>
+More info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>
 
 2. Save it to "Github-API-Key-Release.txt" file
 
