@@ -31,9 +31,22 @@ function New-GithubReleaseDescription {
     }
 }
 
-function Get-IEModVersion {
-    param( $tp2FullPath )
-    (( Get-Content $tp2FullPath | Select-String "version ~" ) -split '~' )[1]
+function Get-IEModVersionLine ($IEMod) {
+    if ($IEMod -is [System.IO.FileInfo]) { $IEMod = $IEMod.FullName }
+    if ($IEMod -is [PSCustomObject]) { $IEMod = $IEMod.tp2TempFullPath }
+
+    $regexVersion = New-Object System.Text.RegularExpressions.Regex('.*?VERSION(\s*)(|~"|~|"|)(@.+|.+)("~|"|~|)(|\s*)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    foreach ($line in [System.IO.File]::ReadLines($IEMod)) {
+        $line = $line -replace "\/\/(.*)(\n|)"
+        if ($line -match "\S" -and $line -notmatch "\/\*[\s\S]*?\*\/") {
+            if ($regexVersion.IsMatch($line)) {
+                [string]$dataVersionLine = $regexVersion.Matches($line).Groups[3].Value.ToString().trimStart(' ').trimStart('~').trimStart('"').TrimEnd(' ').TrimEnd('~').TrimEnd('"')
+                if (!$dataVersionLine) { break } else {
+                    return $dataVersionLine
+                }
+            }
+        }
+    }
 }
 
 # Fix for TLS12
@@ -55,7 +68,7 @@ $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
 $tp2File = ( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0]
 $tp2FullPath = (( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0] ).FullName
-$tp2Version = Get-IEModVersion $tp2FullPath
+$tp2Version = Get-IEModVersionLine $tp2FullPath
 $newTagRelease = $tp2Version -replace "\s+", '_'
 
 Write-Host ""
@@ -66,7 +79,7 @@ Write-Host ""
 
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
 if ( $compare -eq $newTagRelease ) {
-    Write-Host "Version $tp2Version Release `"$newTagRelease`" already exist"
+    Write-Host "Release already exist, nothing to do."
     pause
     break
 }
@@ -88,6 +101,9 @@ $Body = @{
     body     = $releaseDescription -join '</br>'
 } | ConvertTo-Json
 
+git tag "$newTagRelease" --force
+git push origin "$newTagRelease" --force
+
 $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Body $Body -Method POST
 $json
 
@@ -97,7 +113,7 @@ $releaseID = $json.id
 
 # Windows
 $fileName = "$($repository)-$($tp2Version).exe"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
@@ -115,7 +131,7 @@ if ($fullName) {
 
 # Infinity Enngine Mod Package
 $fileName = "$($repository)-$($tp2Version).iemp"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
@@ -132,8 +148,8 @@ if ($fullName) {
 }
 
 # ZIP
-$fileName = "$($repository)-$($tp2Version).iemp"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fileName = "$($repository)-$($tp2Version).zip"
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
@@ -151,7 +167,7 @@ if ($fullName) {
 
 # Windows ZIP
 $fileName = "win-$($repository)-$($tp2Version).iemp"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
@@ -169,7 +185,7 @@ if ($fullName) {
 
 # macOS
 $fileName = "osx-$($repository)-$($tp2Version).tar.gz"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
@@ -187,7 +203,7 @@ if ($fullName) {
 
 # Linux
 $fileName = "lin-$($repository)-$($tp2Version).tar.gz"
-$fullName = Get-Item $fileName | select -ExpandProperty FullName
+$fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
 
 if ($fullName) {
     # DELETE existing asset with the same name
