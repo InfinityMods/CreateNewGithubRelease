@@ -56,7 +56,7 @@ $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 $tp2File = ( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0]
 $tp2FullPath = (( Get-ChildItem -Path $modFolder -Filter *.tp2 -Recurse )[0] ).FullName
 $tp2Version = Get-IEModVersion $tp2FullPath
-$newTagRelease = $tp2Version -replace "\s+",'_'
+$newTagRelease = $tp2Version -replace "\s+", '_'
 
 Write-Host ""
 Write-Host " Github link: $OrgUser\$repository"
@@ -65,7 +65,7 @@ Write-Host "Last Release: $newTagRelease"
 Write-Host ""
 
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
-if (  $compare -eq $newTagRelease ) {
+if ( $compare -eq $newTagRelease ) {
     Write-Host "Version $tp2Version Release `"$newTagRelease`" already exist"
     pause
     break
@@ -75,13 +75,17 @@ Write-Host "Do you want to create new Release: $newTagRelease ?"
 Write-Host ""
 Read-Host "Press ENTER to continue, Ctrl+c to stop" | Out-Null
 
-$releaseDescription = New-GithubReleaseDescription
-if ( $null -eq $releaseDescription ) { break }
+if ( [System.Environment]::OSVersion.Platform -eq 'Win32NT') {
+    $releaseDescription = New-GithubReleaseDescription
+    if ( $null -eq $releaseDescription ) { break }
+} else {
+    $releaseDescription = Read-Host -Prompt 'Release description'
+}
 
 $Body = @{
     tag_name = "$newTagRelease"
-    name = "$($repository) $($newTagRelease)"
-    body = $releaseDescription -join '</br>'
+    name     = "$($repository) $($newTagRelease)"
+    body     = $releaseDescription -join '</br>'
 } | ConvertTo-Json
 
 $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Body $Body -Method POST
@@ -91,47 +95,110 @@ $json
 $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
 $releaseID = $json.id
 
+# Windows
 $fileName = "$($repository)-$($tp2Version).exe"
 $fullName = Get-Item $fileName | select -ExpandProperty FullName
 
-# DELETE existing asset with the same name
-$json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
-if ( $json.assets.name -eq $fileName ){
-    $assertID = $json.assets.id
-    Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
+
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+            -Headers $Headers -Method POST -ContentType 'application/vnd.microsoft.portable-executable' -InFile "$fullName"
+
+    $json.state
 }
 
-$json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+# Infinity Enngine Mod Package
+$fileName = "$($repository)-$($tp2Version).iemp"
+$fullName = Get-Item $fileName | select -ExpandProperty FullName
+
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
+
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
         -Headers $Headers -Method POST -ContentType 'application/vnd.microsoft.portable-executable' -InFile "$fullName"
 
-$json.state
+    $json.state
+}
+
+# ZIP
+$fileName = "$($repository)-$($tp2Version).iemp"
+$fullName = Get-Item $fileName | select -ExpandProperty FullName
+
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
+
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+        -Headers $Headers -Method POST -ContentType 'application/vnd.microsoft.portable-executable' -InFile "$fullName"
+
+    $json.state
+}
+
+# Windows ZIP
+$fileName = "win-$($repository)-$($tp2Version).iemp"
+$fullName = Get-Item $fileName | select -ExpandProperty FullName
+
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
+
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+        -Headers $Headers -Method POST -ContentType 'application/vnd.microsoft.portable-executable' -InFile "$fullName"
+
+    $json.state
+}
 
 # macOS
 $fileName = "osx-$($repository)-$($tp2Version).tar.gz"
 $fullName = Get-Item $fileName | select -ExpandProperty FullName
 
-# DELETE existing asset with the same name
-$json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
-if ( $json.assets.name -eq $fileName ){
-    $assertID = $json.assets.id
-    Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
-}
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
 
-$json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
-        -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
-$json.state
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+            -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
+
+    $json.state
+}
 
 # Linux
 $fileName = "lin-$($repository)-$($tp2Version).tar.gz"
 $fullName = Get-Item $fileName | select -ExpandProperty FullName
 
-# DELETE existing asset with the same name
-$json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
-if ( $json.assets.name -eq $fileName ){
-    $assertID = $json.assets.id
-    Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
-}
+if ($fullName) {
+    # DELETE existing asset with the same name
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
+    if ( $json.assets.name -eq $fileName ) {
+        $assertID = $json.assets.id
+        Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
+    }
 
-$json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
-        -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
-$json.state
+    $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
+            -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
+
+    $json.state
+}

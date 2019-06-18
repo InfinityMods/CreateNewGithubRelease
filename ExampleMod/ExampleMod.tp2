@@ -1,3 +1,6 @@
- BACKUP ~ExampleMod~
-SUPPORT ~ExampleMod~
+ BACKUP ~ExampleMod/backup~
+SUPPORT ~http://www.ExampleMod.com/forums~
 VERSION ~1.2.3~
+
+BEGIN "ExampleMod"
+PRINT "%MOD_FOLDER%"
