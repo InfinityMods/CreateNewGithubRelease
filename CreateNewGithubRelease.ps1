@@ -1,5 +1,5 @@
 
-function New-GithubReleaseDescription {
+function New-GithubReleaseDescription { param($ReleaseDescription)
 
     Add-Type -AssemblyName System.Windows.Forms
     $form = New-Object System.Windows.Forms.Form
@@ -20,6 +20,7 @@ function New-GithubReleaseDescription {
     $textBox = New-Object System.Windows.Forms.Textbox
     $textBox.Multiline = $true
     $textBox.Dock = 'Fill'
+    $textBox.Text = $ReleaseDescription
     $form.Controls.Add( $textBox )
     $form.add_load( { $textBox.Select() } )
     if ( $form.ShowDialog() -eq 'Ok' ) {
@@ -46,7 +47,7 @@ function Get-IEModVersion { param($FullName)
     }
 }
 
-function Update-GithubReleaseAsset { param($FullName)
+function Update-GithubReleaseAsset { param($FullName, $OrgUser, $Repository, $ReleaseID)
     if ($FullName) {
         # DELETE existing asset with the same name
         $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
@@ -59,7 +60,7 @@ function Update-GithubReleaseAsset { param($FullName)
         $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
             -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
 
-        $json.state
+        Write-Host "$fileName $json.state"
     }
 }
 
@@ -125,21 +126,15 @@ $json
 $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
 $releaseID = $json.id
 
-# Get a release by tag name
-$json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
-$releaseID = $json.id
-
 # Windows, Infinity Enngine Mod Package, ZIP
-$fileName = "$($repository)-$($tp2Version).exe", "$($repository)-$($tp2Version).iemp", "$($repository)-$($tp2Version).zip", "osx-$($repository)-$($tp2Version).zip", "lin-$($repository)-$($tp2Version).zip", "osx-$($repository)-$($tp2Version).zip"
+$fileName = "$($repository)-$($tp2Version).exe", "$($repository)-$($tp2Version).iemp", "$($repository)-$($tp2Version).zip", "osx-$($repository)-$($tp2Version).zip", "lin-$($repository)-$($tp2Version).zip"
 
-$fileName % {
-    $fullName = Get-Item $fileName -EA 0 | Select-Object -ExpandProperty FullName
+$fileName | % {
+    $fullName = Get-Item $_ -EA 0 | Select-Object -ExpandProperty FullName
     if ($FullName) {
-        Update-GithubReleaseAsset -FullName $FullName
+        Update-GithubReleaseAsset -FullName $FullName -OrgUser $OrgUser -Repository $repository -ReleaseID $releaseID
     }
 }
 
-
-
-
+Write-Host "Finished."
 
