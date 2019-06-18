@@ -1,6 +1,6 @@
  BACKUP ~ExampleMod/backup~
 SUPPORT ~http://www.ExampleMod.com/forums~
-VERSION ~2.0.3~
+VERSION ~2.0.4~
 
 BEGIN "ExampleMod"
 PRINT "%MOD_FOLDER%"
