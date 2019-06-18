@@ -1,5 +1,7 @@
 # Script for creating new Github release with optional assets
 
+## Installation:
+
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>
 
 2. Save it to "Github-API-Key-Release.txt" file
@@ -12,14 +14,17 @@ mac: /Users/<username>/Github-API-Key-Release.txt
 Lin: <root>/home/<username>/Github-API-Key-Release.txt
 ```
 
-4. Put #ModRelease.ps1 and #ModRelease.bat inside man mod directory, same where package_mod.bat is
+4. Put #ModRelease.ps1 and #ModRelease.bat inside mod top-level directory
 
-5. Prepare assets via package_mod.bat, wait until archives are created with proper names:
+## Usage:
+1. Prepare assets, wait until packages are created with proper names:
 
 ```code
 ModId-$tp2Version.exe
+ModId-$tp2Version.iemp
+ModId-$tp2Version.zip
 mac-ModId-$tp2Version.zip
 lin-ModId-$tp2Version.zip
 ```
 
-6. Run #ModRelease.bat
+2. Run #ModRelease.bat and follow instructions
