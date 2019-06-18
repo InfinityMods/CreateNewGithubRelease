@@ -143,7 +143,11 @@ $dataGitLog = $dataGitLog -join "`r`n"
 
 if ( [System.Environment]::OSVersion.Platform -eq 'Win32NT' ) {
     $releaseDescription = New-GithubReleaseDescription -ReleaseDescription $dataGitLog
-    if ( $null -eq $releaseDescription ) { break }
+    if ( $null -eq $releaseDescription ) {
+        Write-Host "Release description was empty, nothing to do."
+        pause
+        break
+    }
 } else {
     $releaseDescription = Read-Host -Prompt 'Release description'
 }
