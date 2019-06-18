@@ -1,5 +1,12 @@
 # Script for creating new Github release with optional assets
 
+## Features:
+- prevent creating new release if the same release already exist
+- prevent creating new release if there are uncommitted file modifications
+- checking of the mod "VERSION" keyword, prevent creating '2.1.3' release when you mod version is '2.1.2'
+- release description can be edited before creating new release
+- initial release description is generated from commit messages between two latest tags
+
 ## Installation:
 
 1. Download and extract this repository, move everything from 'ModRelease-master' folder directly into the folder where you keep all other top-level mod folders.
