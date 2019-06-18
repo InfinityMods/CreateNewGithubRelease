@@ -4,7 +4,7 @@ $RECYCLE.BIN/
 temp/
 tmp/
 
-/\#ModRelease-Github-Key.txt
+/\#ModRelease/\#ModRelease-Github-Key.txt
 
 *.bak
 *.bat
