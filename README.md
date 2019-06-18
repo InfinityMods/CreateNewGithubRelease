@@ -2,11 +2,13 @@
 
 ## Installation:
 
+1. Download and extract this repository, move everything from 'ModRelease-master' folder directly into extracted mods folder.
+
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>.
 
-2. Save it to "#ModRelease-Github-Key-Example.txt" file and rename it to #ModRelease-Github-Key.txt
+1. Save it to "#ModRelease-Github-Key-Example.txt" file and rename it to #ModRelease-Github-Key.txt
 
-3. Put #ModRelease.bat inside mod top-level directory, reffer to included mod example.
+1. Put #ModRelease.bat inside mod top-level directory, reffer to included mod example.
 
 ## Usage:
 1. Increase mod version inside mod file.
