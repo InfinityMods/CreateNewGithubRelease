@@ -9,9 +9,9 @@
 3. Put #ModRelease.bat inside mod top-level directory, reffer to included mod example.
 
 ## Usage:
-1. Do not create new tag for release, it will be taken from mod version.
+1. Increase mod version inside mod file.
 
-2. Increase mod version, commit all file changes aka don't leave modified but uncommitted files.
+2. Create new commit. Do not create new tag for release, it will be created automatically from mod version.
 
 3. Optionally, create assets, wait until all packages are created with proper names:
 
