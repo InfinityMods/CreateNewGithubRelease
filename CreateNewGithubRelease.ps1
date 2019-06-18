@@ -92,6 +92,13 @@ Write-Host " tp2 VERSION: $tp2Version"
 Write-Host "Last Release: $newTagRelease"
 Write-Host ""
 
+$UncommittedChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
+if ($UncommittedChanges) {
+    Write-Host "You have uncommitted changes, please commit or revert them before making new release."
+    pause
+    break
+}
+
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
 if ( $compare -eq $newTagRelease ) {
     Write-Host "Release already exist, nothing to do."
