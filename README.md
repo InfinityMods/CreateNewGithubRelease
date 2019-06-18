@@ -1,16 +1,16 @@
 # Script for creating new Github release with optional assets
 
-## Requirements:
-Windows 10 - nothing  
-Windows 7/8.1 - you need to install first [.NET Framework 4.5.2](https://www.microsoft.com/net/download/dotnet-framework-runtime) or above and then [Powershell 5.1](https://docs.microsoft.com/en-us/powershell/wmf/5.1/install-configure)/[Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
-macOS and Linux - [Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
-
 ## Features:
 - prevent creating new release if the same release already exist
 - prevent creating new release if there are uncommitted file modifications
 - checking of the mod "VERSION" keyword, prevent creating '2.1.3' release when you mod version is '2.1.2'
 - release description can be edited before creating new release
 - initial release description is generated from commit messages between two latest tags
+
+## Requirements:
+Windows 10 - nothing  
+Windows 7/8.1 - you need to install first [.NET Framework 4.5.2](https://www.microsoft.com/net/download/dotnet-framework-runtime) or above and then [Powershell 5.1](https://docs.microsoft.com/en-us/powershell/wmf/5.1/install-configure)/[Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
+macOS and Linux - [Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest) 
 
 ## Installation:
 
