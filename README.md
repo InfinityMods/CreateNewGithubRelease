@@ -2,7 +2,7 @@
 
 ## Installation:
 
-1. Download and extract this repository, move everything from 'ModRelease-master' folder directly into extracted mods folder.
+1. Download and extract this repository, move everything from 'ModRelease-master' folder directly into the folder where you keep all other top-level mod folders.
 
 1. Open <https://github.com/settings/tokens>, and create ["personal access token"](https://github.com/settings/tokens/new) with "public_repo" privilege, it's not you password, you can revoke it at any time, more info: <https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line>.
 
