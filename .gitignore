@@ -3,7 +3,8 @@ backup/
 $RECYCLE.BIN/
 temp/
 tmp/
-/#ModRelease-Github-Key.txt
+
+/\#ModRelease-Github-Key.txt
 
 *.bak
 *.bat
