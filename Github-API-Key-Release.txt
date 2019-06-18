@@ -1,1 +1,0 @@
-put you "personal access token" here then move this file to you HOME (C:\Users\<username>) dir

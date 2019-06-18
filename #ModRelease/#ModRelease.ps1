@@ -70,7 +70,7 @@ function Update-GithubReleaseAsset { param($FullName, $OrgUser, $Repository, $Re
 $( try { $script:MyInvocation.MyCommand.Path, $script:psISE.CurrentFile.Fullpath, $script:psEditor.GetEditorContext().CurrentFile.Path, $script:dte.ActiveDocument.FullName } catch { $_ } ) | % { $_ | Split-Path -EA 0 | Set-Location }
 
 # Set this to you Personal access token
-$apiKey = Get-Content "$env:USERPROFILE\Github-API-Key-Release.txt"
+$apiKey = Get-Content ".\#ModRelease-Github-Key.txt"
 $repository = (Split-Path ( git config --get remote.origin.url ) -Leaf ) -replace '\.git'
 $OrgUser = (Split-Path ( git config --get remote.origin.url ) -Parent ) -replace 'https:\\\\github.com\\'
 $username = git config --get user.name
