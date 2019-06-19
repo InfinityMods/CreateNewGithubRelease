@@ -30,9 +30,9 @@ macOS and Linux - [Powershell 6](https://github.com/PowerShell/PowerShell/releas
 3. Optionally, create assets, wait until all packages are created with proper names:
 
 ```code
-ModId-$tp2Version.exe
-ModId-$tp2Version.iemp
-ModId-$tp2Version.zip
+ModID-version.exe
+ModID-version.iemp
+ModID-version.zip
 ```
 
 4. Run #ModRelease.bat and follow further instructions.
