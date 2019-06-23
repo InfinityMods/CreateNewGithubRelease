@@ -20,7 +20,7 @@ macOS and Linux - [Powershell 6](https://github.com/PowerShell/PowerShell/releas
 
 1. Save it to "#ModRelease-Github-Key-Example.txt" file and rename it to #ModRelease-Github-Key.txt
 
-1. Put #ModRelease.bat inside mod top-level directory, reffer to included mod example.
+1. Put #ModRelease.bat inside mod top-level directory, use the included mod example as reference.
 
 ## Usage:
 1. Increase mod version inside mod file.
