@@ -86,7 +86,7 @@ if ( ! (Get-Item '..\#ModRelease\#ModRelease-Github-Key.txt' )) {
 }
 
 # get Personal Access Token
-$apiKey = Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt"
+$apiKey = (Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt")[0]
 
 if ($apiKey.Length -ne 40) {
     Write-Host "API-KEY length is not 40 characters, please check the first line of #ModRelease-Github-Key.txt"
@@ -115,8 +115,8 @@ Write-Host " tp2 VERSION: $tp2Version"
 Write-Host "Last Release: $newTagRelease"
 Write-Host ""
 
-$UncommittedChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
-if ($UncommittedChanges) {
+$LocalChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
+if ($LocalChanges) {
     Write-Host "You have uncommitted changes, please commit or revert them before making new release."
     pause
     break
