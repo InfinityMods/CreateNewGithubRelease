@@ -116,7 +116,7 @@ Write-Host " tp2 VERSION: $tp2Version"
 Write-Host "Last Release: $($dataTags[0])"
 Write-Host ""
 
-$compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
+$compare = ( $dataTags | ? { $_ -eq $newTagRelease } )
 if ( $compare -eq $newTagRelease ) {
     Write-Host "Release already exist, nothing to do."
     pause
