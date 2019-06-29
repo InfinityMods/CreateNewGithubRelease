@@ -3,6 +3,7 @@ backup/
 $RECYCLE.BIN/
 temp/
 tmp/
+.vscode/
 
 /\#ModRelease/\#ModRelease-Github-Key.txt
 
