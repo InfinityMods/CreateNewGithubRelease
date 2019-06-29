@@ -86,7 +86,7 @@ if ( ! (Get-Item '..\#ModRelease\#ModRelease-Github-Key.txt' )) {
 }
 
 # get Personal Access Token
-$apiKey = @(Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt")[0]
+$apiKey = Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt" -TotalCount 1
 
 if ($apiKey.Length -ne 40) {
     $apiKey.Length
