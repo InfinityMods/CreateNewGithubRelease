@@ -166,7 +166,7 @@ $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/rel
 $releaseID = $json.id
 
 # Windows, Infinity Enngine Mod Package, ZIP
-$fileName = "$($repository)-$($tp2Version).exe", "$($repository)-$($tp2Version).iemp", "$($repository)-$($tp2Version).zip"
+$fileName = "$($repository)-$($tp2Version).exe", "$($repository)-$($tp2Version).iemod", "$($repository)-$($tp2Version).zip"
 
 $fileName | % {
     $fullName = Get-Item $_ -EA 0 | Select-Object -ExpandProperty FullName
