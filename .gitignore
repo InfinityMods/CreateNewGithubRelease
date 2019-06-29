@@ -3,7 +3,9 @@ backup/
 $RECYCLE.BIN/
 temp/
 tmp/
-.vscode/
+
+.*
+!/.gitignore
 
 /\#ModRelease/\#ModRelease-Github-Key.txt
 
