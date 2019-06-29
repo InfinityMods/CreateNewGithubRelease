@@ -86,25 +86,25 @@ if ( ! (Get-Item '..\#ModRelease\#ModRelease-Github-Key.txt' )) {
 }
 
 # get Personal Access Token
-$apiKey = (Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt")[0]
+$apiKey = @(Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt")[0]
 
 if ($apiKey.Length -ne 40) {
+    $apiKey.Length
     Write-Host "API-KEY length is not 40 characters, please check the first line of #ModRelease-Github-Key.txt"
     pause
     break
 }
 
 $repository = (Split-Path ( git config --get remote.origin.url ) -Leaf ) -replace '\.git'
-$OrgUser = (Split-Path ( git config --get remote.origin.url ) -Parent ) -replace 'https:\\\\github.com\\'
+$OrgUser = ((Split-Path ( git config --get remote.origin.url ) -Parent ) -replace 'https:\\\\github.com\\') -replace 'https:\/\/github.com\/'
 $username = git config --get user.name
 
 $Token = $username + ':' + $apiKey
 $Base64Token = [System.Convert]::ToBase64String( [char[]]$Token )
 $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
-[array]$dataReleases = ( Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get ).tag_name
+[array]$dataReleases = ( Invoke-RestMethod -Uri "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get ).tag_name
 
-$tp2File = ( Get-ChildItem -Path $IEModFolder -Filter *.tp2 -Recurse )[0]
 $tp2FullPath = (( Get-ChildItem -Path $IEModFolder -Filter *.tp2 -Recurse )[0] ).FullName
 $tp2Version = Get-IEModVersion -FullName $tp2FullPath
 $newTagRelease = $tp2Version -replace "\s+", '_'
@@ -115,16 +115,17 @@ Write-Host " tp2 VERSION: $tp2Version"
 Write-Host "Last Release: $newTagRelease"
 Write-Host ""
 
-$LocalChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
-if ($LocalChanges) {
-    Write-Host "You have uncommitted changes, please commit or revert them before making new release."
-    pause
-    break
-}
 
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
 if ( $compare -eq $newTagRelease ) {
     Write-Host "Release already exist, nothing to do."
+    pause
+    break
+}
+
+$LocalChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
+if ($LocalChanges) {
+    Write-Host "You have uncommitted changes, please commit or revert them before making new release."
     pause
     break
 }
@@ -175,5 +176,4 @@ $fileName | % {
     }
 }
 
-Write-Host "Finished."
-
+Write-Information "Finished."
