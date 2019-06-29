@@ -32,7 +32,7 @@ Linux - [Git](https://git-scm.com/download/linux) and [Powershell 6](https://git
 
 ```code
 ModID-version.exe
-ModID-version.iemp
+ModID-version.iemod
 ModID-version.zip
 ```
 
