@@ -26,14 +26,14 @@ Linux - [Git](https://git-scm.com/download/linux) and [Powershell 6](https://git
 ## Usage:
 1. Increase mod version inside mod file.
 
-2. Create new commit. Do not create new tag for release, it will be created automatically from mod version and pushed into online repository.
+1. Create new commit. Do not create new tag for release, it will be created automatically from mod version and pushed into online repository.
 
-optionall step: create mod packages (release assets), wait until all packages are created with proper names:
+    optionall step: create mod packages (release assets), wait until all packages are created with proper names:
 
-```code
-ModID-version.exe
-ModID-version.iemod
-ModID-version.zip
-```
+    ```code
+    ModID-version.exe
+    ModID-version.iemod
+    ModID-version.zip
+    ```
 
-4. Run #ModRelease.bat and follow further instructions.
+3. Run #ModRelease.bat and follow further instructions.
