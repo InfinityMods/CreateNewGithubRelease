@@ -25,12 +25,10 @@ function New-GithubReleaseDescription {
     $textBox.Text = $ReleaseDescription
     $form.Controls.Add( $textBox )
     $form.add_load( { $textBox.Select() } )
-    if ( $form.ShowDialog() -eq 'Ok' ) {
-        $form.BringToFront()
-        return $textBox.lines
-    } else {
-        Write-Host 'Cancelled' -ForegroundColor red
-        return $null
+    $dialog = $form.ShowDialog()
+    $form.BringToFront()
+    if ( $dialog -eq 'Ok' ) {
+        $textBox.lines
     }
 }
 
@@ -43,7 +41,7 @@ function Get-IEModVersion {
             if ($regexVersion.IsMatch($line)) {
                 [string]$dataVersionLine = $regexVersion.Matches($line).Groups[3].Value.ToString().trimStart(' ').trimStart('~').trimStart('"').TrimEnd(' ').TrimEnd('~').TrimEnd('"')
                 if (!$dataVersionLine) { break } else {
-                    return $dataVersionLine
+                    $dataVersionLine
                 }
             }
         }
