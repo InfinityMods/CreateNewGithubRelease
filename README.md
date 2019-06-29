@@ -28,7 +28,7 @@ Linux - [Git](https://git-scm.com/download/linux) and [Powershell 6](https://git
 
 1. Create new commit. Do not create new tag for release, it will be created automatically from mod version and pushed into online repository.
 
-    optionall step: create mod packages (release assets), wait until all packages are created with proper names:
+    optional step: create mod packages (release assets), wait until all packages are created with proper names:
 
     ```code
     ModID-version.exe
