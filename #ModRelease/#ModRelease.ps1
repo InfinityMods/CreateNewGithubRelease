@@ -109,7 +109,7 @@ $tp2Version = Get-IEModVersion -FullName $tp2FullPath
 $newTagRelease = $tp2Version -replace "\s+", '_'
 
 Write-Host ""
-Write-Host " Github link: $OrgUser\$repository"
+Write-Host " Github link: $OrgUser/$repository"
 Write-Host " tp2 VERSION: $tp2Version"
 Write-Host "Last Release: $($dataTags[0])"
 Write-Host ""
