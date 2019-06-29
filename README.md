@@ -8,9 +8,10 @@
 - initial release description is generated from commit messages between two latest tags
 
 ## Requirements:
-Windows 10 - nothing  
-Windows 7/8.1 - you need to install first [.NET Framework 4.5.2](https://www.microsoft.com/net/download/dotnet-framework-runtime) or above and then [Powershell 5.1](https://docs.microsoft.com/en-us/powershell/wmf/5.1/install-configure)/[Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
-macOS and Linux - [Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest) 
+Windows 10 - [Git](https://git-scm.com/download/win)  
+Windows 7/8.1 - [Git](https://git-scm.com/download/win), [.NET Framework 4.5.2](https://www.microsoft.com/net/download/dotnet-framework-runtime) or above and [Powershell 5.1](https://docs.microsoft.com/en-us/powershell/wmf/5.1/install-configure)/[Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
+macOS - [Git](https://git-scm.com/download/mac) and [Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest)  
+Linux - [Git](https://git-scm.com/download/linux) and [Powershell 6](https://github.com/PowerShell/PowerShell/releases/latest) 
 
 ## Installation:
 
