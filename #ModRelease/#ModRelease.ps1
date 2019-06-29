@@ -103,7 +103,8 @@ $Token = $username + ':' + $apiKey
 $Base64Token = [System.Convert]::ToBase64String( [char[]]$Token )
 $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
-[array]$dataReleases = ( Invoke-RestMethod -Uri "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get ).tag_name
+[array]$dataReleases = Invoke-RestMethod -Uri "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get
+$dataTags = ($dataReleases | Sort-Object -Property published_at -Descending).tag_name 
 
 $tp2FullPath = (( Get-ChildItem -Path $IEModFolder -Filter *.tp2 -Recurse )[0] ).FullName
 $tp2Version = Get-IEModVersion -FullName $tp2FullPath
@@ -112,9 +113,8 @@ $newTagRelease = $tp2Version -replace "\s+", '_'
 Write-Host ""
 Write-Host " Github link: $OrgUser\$repository"
 Write-Host " tp2 VERSION: $tp2Version"
-Write-Host "Last Release: $newTagRelease"
+Write-Host "Last Release: $($dataTags[0])"
 Write-Host ""
-
 
 $compare = ( $dataReleases | ? { $_ -eq $newTagRelease } )
 if ( $compare -eq $newTagRelease ) {
