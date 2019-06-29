@@ -121,7 +121,7 @@ if ( $compare -eq $newTagRelease ) {
     break
 }
 
-Start-Process -FilePath git -ArgumentList "update-index --refresh --quiet" -Wait -NoNewWindow -PassThru
+Start-Process -FilePath git -ArgumentList "update-index --refresh" -Wait -NoNewWindow -PassThru
 $LocalChanges = (Start-Process -FilePath git -ArgumentList "diff-index --quiet HEAD --" -Wait -NoNewWindow -PassThru).ExitCode
 if ($LocalChanges) {
     Write-Host "You have uncommitted changes, please commit or revert them before making new release."
