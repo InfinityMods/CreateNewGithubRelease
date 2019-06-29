@@ -7,6 +7,9 @@ tmp/
 .*
 !/.gitignore
 
+/\#ModRelease.bat
+/\#ModRelease.command
+/\#ModRelease.sh
 /\#ModRelease/\#ModRelease-Github-Key.txt
 
 *.bak
@@ -27,3 +30,4 @@ ehthumbs.db
 .AppleDB
 .AppleDesktop
 .apdisk
+
