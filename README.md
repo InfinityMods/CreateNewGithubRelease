@@ -1,4 +1,3 @@
-# Script for creating new Github release with optional assets
+# ModRelease - create new Github Release with mod packages
 
-Instruction how to use:  
-https://forums.beamdog.com/discussion/74811/modrelease-create-new-github-release-with-mod-packages/p1
+<https://forums.beamdog.com/discussion/74811/modrelease-create-new-github-release-with-mod-packages/p1>
