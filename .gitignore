@@ -4,6 +4,8 @@ backup/
 temp/
 tmp/
 
+/\#ModRelease/\#ModRelease-Github-Key.txt
+
 .*
 !/.gitconfig
 !/.gitignore
