@@ -1,15 +1,16 @@
+/\#ModRelease/\#ModRelease-Github-Key.txt
+
 $RECYCLE.BIN/
 __macosx
 backup/
 temp/
 tmp/
 
-/\#ModRelease/\#ModRelease-Github-Key.txt
-
 .*
-!/.gitconfig
-!/.gitignore
 !/.gitattributes
+!/.gitconfig
+!/.github
+!/.gitignore
 
 *.bak
 *.bat
