@@ -201,9 +201,23 @@ function New-UniversalModPackage {
         # zip package
         Copy-Item -Path $ModTopDirectory\$ModID\* -Destination $tempDir\$outZip\$ModID -Recurse -Exclude $regexAny | Out-Null
 
-        # Copy-Item over latest WeiDU versions
-        Copy-Item "$PSScriptRoot\weidu\weidu.exe" "$tempDir\$outZip\$weiduExeBaseName.exe" | Out-Null
-        Copy-Item "$PSScriptRoot\weidu\weidu.mac" "$tempDir\$outZip\$($weiduExeBaseName.tolower())" | Out-Null
+        # get latest weidu version
+        $datalastRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/weiduorg/weidu/releases/latest" -Headers $Headers -Method Get
+        $weiduWinUrl = $datalastRelease.assets | ? name -Match 'Windows' | Select-Object -ExpandProperty browser_download_url
+        $weiduMacUrl = $datalastRelease.assets | ? name -Match 'Mac' | Select-Object -ExpandProperty browser_download_url
+
+        Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile '$tempDir\WeiDU-Windows.zip' -PassThru | Out-Null
+        Expand-Archive -Path '$tempDir\WeiDU-Windows.zip' -DestinationPath '.' | Out-Null
+
+        Invoke-WebRequest -Uri $weiduMacUrl -Headers $Headers -OutFile '$tempDir\WeiDU-Mac.zip' -PassThru | Out-Null
+        Expand-Archive -Path '$tempDir\WeiDU-Mac.zip' -DestinationPath '.' | Out-Null
+
+        # Copy latest WeiDU versions
+        Copy-Item "$tempDir\WeiDU-Windows\bin\amd64\weidu.exe" "$tempDir\$outZip\$weiduExeBaseName.exe" | Out-Null
+        Copy-Item "$tempDir\WeiDU-Mac\bin\amd64\weidu" "$tempDir\$outZip\$weiduExeBaseName" | Out-Null
+
+        # Create .command script
+        'cd "${0%/*}"' + "`n" + 'ScriptName="${0##*/}"' + "`n" + './${ScriptName%.*}' | Out-File -FilePath "$tempDir\$outZip\$($weiduExeBaseName.tolower()).command" | Out-Null
 
         # Copy-Item over weidu.command script
         Copy-Item "$PSScriptRoot\weidu\weidu.command" "$tempDir\$outZip\$($weiduExeBaseName.tolower()).command" | Out-Null
