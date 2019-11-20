@@ -1,24 +1,7 @@
 /\#ModRelease/\#ModRelease-Github-Key.txt
 
-$RECYCLE.BIN/
-__macosx
-backup/
-temp/
-tmp/
-
 .*
 !/.gitattributes
 !/.gitconfig
 !/.github
 !/.gitignore
-
-*.bak
-*.bat
-*.iemod
-*.lnk
-*.rar
-*.tar*
-*.tmp
-*.zip
-
-Thumbs.db
