@@ -11,7 +11,7 @@
 *.command text eol=lf
 *.dll binary
 *.eff binary
-*.exe binary
+*.exe binary eol=crlf
 *.gif binary
 *.html text
 *.ico binary
