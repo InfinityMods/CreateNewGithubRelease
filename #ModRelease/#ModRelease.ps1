@@ -135,113 +135,6 @@ function New-GithubReleaseDescriptionAv {
     }
 }
 
-function Update-GithubReleaseAsset {
-    param($FullName, $OrgUser, $Repository, $ReleaseID)
-    if ($FullName) {
-        # DELETE existing asset with the same name
-        $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET
-        $fileName = Split-Path $FullName -Leaf
-        if ($json.assets.name -eq $fileName) {
-            $assertID = $json.assets.id
-            Invoke-RestMethod https://api.github.com/repos/$OrgUser/$repository/releases/assets/$assertID -Headers $Headers -Method DELETE
-        }
-
-        $json = Invoke-RestMethod "https://uploads.github.com/repos/$OrgUser/$repository/releases/$releaseID/assets?name=`"$fileName`"" `
-            -Headers $Headers -Method POST -ContentType 'application/gzip' -InFile "$fullName"
-        Write-Host "$fileName $json.state"
-    }
-}
-
-function New-UniversalModPackage {
-    [CmdletBinding()]
-    param ($ModTopDirectory)
-
-    begin {
-
-        $ModMainFile = (Get-ChildItem -Path $ModTopDirectory -Recurse -Depth 1 -Include "*.tp2", "*.tp3")[0]
-        $ModID = $ModMainFile.BaseName -replace 'setup-'
-
-        $weiduExeBaseName = "Setup-$ModID"
-
-        $ModVersion = Get-IEModVersion -Path $ModMainFile.FullName
-        if ($null -eq $ModVersion -or $ModVersion -eq '') { $ModVersion = '0.0.0' }
-
-        $iniData = try { Get-Content $ModTopDirectory\$ModID\$ModID.ini -EA 0 } catch { }
-        if ($iniData) {
-            $ModDisplayName = (($iniData | ? { $_ -notlike "*#*" -and $_ -like "Name*=*" }) -split '=')[1].TrimStart(' ').TrimEnd(' ')
-
-            # Github release asset name limitation
-            $PackageName = "$($ModDisplayName -replace "\s",'-')-$($ModVersion -replace "\s",'-')"
-
-        } else {
-            $PackageName = "$($ModID -replace "\s",'-')-$($ModVersion -replace "\s",'-')"
-        }
-
-        # cleanup old files
-        Remove-Item -Path "$ModTopDirectory\*.iemod" -Force -EA 0 | Out-Null
-
-        $outIEMod = "$ModID-iemod"
-        $outZip = "$ModID-zip"
-
-        # temp dir
-        if ($PSVersionTable.PSEdition -eq 'Desktop' -or $isWindows) {
-            $tempDir = Join-path -Path $env:TEMP -ChildPath (Get-Random)
-        } else {
-            $tempDir = Join-path -Path '/tmp' -ChildPath (Get-Random)
-        }
-
-        Remove-Item $tempDir -Recurse -Force -EA 0 | Out-Null
-        New-Item -Path $tempDir -ItemType Directory -Force | Out-Null
-        New-Item -Path $tempDir\$outIEMod\$ModID -ItemType Directory -Force | Out-Null
-        New-Item -Path $tempDir\$outZip\$ModID -ItemType Directory -Force | Out-Null
-
-    }
-    process {
-        $regexAny = ".*", "*.bak", "*.iemod", "*.tmp", "*.temp", 'backup', 'bgforge.ini', 'Thumbs.db', 'ehthumbs.db', '__macosx', '$RECYCLE.BIN'
-        $excludedAny = Get-ChildItem -Path $ModTopDirectory\$ModID -Recurse -Include $regexAny
-
-        #iemod package
-        Copy-Item -Path $ModTopDirectory\$ModID\* -Destination $tempDir\$outIEMod\$ModID -Recurse -Exclude $regexAny | Out-Null
-
-        Write-Host "Creating $PackageName.iemod" -ForegroundColor Green
-
-        Compress-Archive -Path $tempDir\$outIEMod\* -DestinationPath "$ModTopDirectory\$PackageName.zip" -Force -CompressionLevel Optimal | Out-Null
-        Rename-Item -Path "$ModTopDirectory\$PackageName.zip" -NewName "$PackageName.iemod" -Force | Out-Null
-
-        # zip package
-        Copy-Item -Path $ModTopDirectory\$ModID\* -Destination $tempDir\$outZip\$ModID -Recurse -Exclude $regexAny | Out-Null
-
-        # get latest weidu version
-        $datalastRelease = Invoke-RestMethod -Uri 'https://api.github.com/repos/weiduorg/weidu/releases/latest' -Headers $Headers -Method Get
-        $weiduWinUrl = $datalastRelease.assets | ? name -Match 'Windows' | Select-Object -ExpandProperty browser_download_url
-        $weiduMacUrl = $datalastRelease.assets | ? name -Match 'Mac' | Select-Object -ExpandProperty browser_download_url
-
-        Invoke-WebRequest -Uri $weiduWinUrl -Headers $Headers -OutFile "$tempDir\WeiDU-Windows.zip" -PassThru | Out-Null
-        Expand-Archive -Path "$tempDir\WeiDU-Windows.zip" -DestinationPath "$tempDir\" | Out-Null
-
-        Invoke-WebRequest -Uri $weiduMacUrl -Headers $Headers -OutFile "$tempDir\WeiDU-Mac.zip" -PassThru | Out-Null
-        Expand-Archive -Path "$tempDir\WeiDU-Mac.zip" -DestinationPath "$tempDir\" | Out-Null
-
-        # Copy latest WeiDU versions
-        Copy-Item "$tempDir\WeiDU-Windows\bin\amd64\weidu.exe" "$tempDir\$outZip\$weiduExeBaseName.exe" | Out-Null
-        Copy-Item "$tempDir\WeiDU-Mac\bin\amd64\weidu" "$tempDir\$outZip\$($weiduExeBaseName.tolower())" | Out-Null
-
-        # Create .command script
-        'cd "${0%/*}"' + "`n" + 'ScriptName="${0##*/}"' + "`n" + './${ScriptName%.*}' + "`n" | Set-Content -Path "$tempDir\$outZip\$($weiduExeBaseName.tolower()).command" | Out-Null
-
-        Write-Host "Creating $PackageName.zip" -ForegroundColor Green
-
-        Compress-Archive -Path $tempDir\$outZip\* -DestinationPath "$ModTopDirectory\$PackageName.zip" -Force -CompressionLevel Optimal | Out-Null
-    }
-    end {
-        if ($excludedAny) {
-            Write-Warning "Excluded items fom the package:"
-            $excludedAny.FullName.Substring($ModTopDirectory.length) | Write-Warning
-            pause
-        }
-    }
-}
-
 # Fix for TLS12
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -281,10 +174,17 @@ $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 $dataTags = ($dataReleases | Sort-Object -Property published_at -Descending).tag_name
 if ($dataTags) { $lastRelease = $dataTags[0] }
 
-$ModMainFile = (Get-ChildItem -Path $ModTopDirectory -Recurse -Depth 1 -Include "*.tp2", "*.tp3")[0]
+$ModMainFile = (Get-ChildItem -Path $ModTopDirectory -Recurse -Depth 1 -Include "*.tp2")[0]
 $ModID = $ModMainFile.BaseName -replace 'setup-'
 $ModVersion = Get-IEModVersion -Path $ModMainFile.FullName
-if ($null -eq $ModVersion -or $ModVersion -eq '') { $ModVersion = '0.0.0' }
+
+if ($null -eq $ModVersion -or $ModVersion -eq '') {
+    Write-Host "Cannot detect VERSION keyword iniside mod"
+    Exit 1
+} else {
+    Write-Host "Version: $ModVersion"
+    Write-Host "Version cut: $($ModVersion -replace "\s+", '_')"
+}
 
 $PackageName = "$ModID-$ModVersion"
 
@@ -365,18 +265,6 @@ $ErrorActionPreference = 'Stop'
 $json = try { Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases/tags/$newTagRelease" -Headers $Headers -Method GET } catch { $_ }
 $ErrorActionPreference = 'Continue'
 
-$releaseID = $json.id
-
-New-UniversalModPackage -ModTopDirectory $ModTopDirectory
-
-# Universal Mod Package, Zip Package, Windows Self-Extracting WinRar Package
-$fileName = Get-Item -Path "$PackageName.iemod", "$PackageName.zip" -EA 0
-
-$fileName | % {
-    $fullName = Get-ChildItem $_ -EA 0 | Select-Object -ExpandProperty FullName
-    if ($FullName) {
-        Update-GithubReleaseAsset -FullName $FullName -OrgUser $OrgUser -Repository $repository -ReleaseID $releaseID
-    }
-}
+$json.id
 
 Write-Host "Finished." -ForegroundColor Green
