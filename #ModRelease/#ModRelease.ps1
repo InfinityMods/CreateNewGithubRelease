@@ -171,7 +171,7 @@ $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
 $Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
 
 [array]$dataReleases = Invoke-RestMethod -Uri "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get
-$dataTags = ($dataReleases | Sort-Object -Property published_at -Descending).tag_name
+[array]$dataTags = ($dataReleases | Sort-Object -Property published_at -Descending).tag_name
 if ($dataTags) { $lastRelease = $dataTags[0] }
 
 $ModMainFile = (Get-ChildItem -Path $ModTopDirectory -Recurse -Depth 1 -Include "*.tp2")[0]
