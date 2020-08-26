@@ -186,8 +186,6 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
     Write-Host "Version cut: $($ModVersion -replace "\s+", '_')"
 }
 
-$PackageName = "$ModID-$ModVersion"
-
 $newTagRelease = $ModVersion -replace "\s+", '_'
 
 Write-Host
