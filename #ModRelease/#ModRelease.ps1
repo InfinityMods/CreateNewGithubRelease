@@ -188,6 +188,18 @@ if ($null -eq $ModVersion -or $ModVersion -eq '') {
 
 $newTagRelease = $ModVersion -replace "\s+", '_'
 
+# better release title
+$iniDataFile = try { Get-ChildItem -Path $ModMainFile.DirectoryName -Depth 0 -Include "$ModID.ini" } catch { }
+if ($iniDataFile) {
+    $iniData = try { Get-Content $iniDataFile -EA 0 } catch { }
+}
+if ($iniData) {
+    $ModDisplayName = ((($iniData | ? { $_ -notlike "^\s+#*" -and $_ -like "Name*=*" }) -split '=') -split '#')[1].TrimStart(' ').TrimEnd(' ')
+    $ReleaseTitle = "$($ModDisplayName) $($newTagRelease)"
+} else {
+    $ReleaseTitle = "$($repository) $($newTagRelease)"
+}
+
 Write-Host
 Write-Host " Github link: $OrgUser/$repository"
 Write-Host " mod VERSION: $ModVersion"
@@ -247,8 +259,8 @@ if ([System.Environment]::OSVersion.Platform -eq 'Win32NT') {
 
 $Body = @{
     tag_name = "$newTagRelease"
-    name     = "$($repository) $($newTagRelease)"
-    body     = $releaseDescription -join '</br>'
+    name     = "$ReleaseTitle"
+    body     = $releaseDescription -join '<br>'
 } | ConvertTo-Json
 
 try {
