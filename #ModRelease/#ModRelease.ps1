@@ -148,16 +148,16 @@ if ($ModTopDirectory) {
     break
 }
 
-if (! (Get-Item '..\#ModRelease\#ModRelease-Github-Key.txt')) {
-    Rename-Item '..\#ModRelease\#ModRelease-Github-Key-Example.txt' '..\#ModRelease\#ModRelease-Github-Key.txt' | Out-Null
+if (! (Get-Item '..\#ModRelease\#ModRelease-GitHub-Key.txt')) {
+    Rename-Item '..\#ModRelease\#ModRelease-GitHub-Key-Example.txt' '..\#ModRelease\#ModRelease-GitHub-Key.txt' | Out-Null
 }
 
 # get Personal Access Token
-$apiKey = Get-Content "..\#ModRelease\#ModRelease-Github-Key.txt" -TotalCount 1
+$apiKey = Get-Content "..\#ModRelease\#ModRelease-GitHub-Key.txt" -TotalCount 1
 
 if ($apiKey.TrimStart(' ').TrimEnd(' ').Length -ne 40) {
     $apiKey.Length
-    Write-Host "API-KEY length is not 40 characters, please check the first line of #ModRelease-Github-Key.txt"
+    Write-Host "API-KEY length is not 40 characters, please check the first line of #ModRelease-GitHub-Key.txt"
     pause
     break
 }
@@ -201,7 +201,7 @@ if ($iniData) {
 }
 
 Write-Host
-Write-Host " Github link: $OrgUser/$repository"
+Write-Host " GitHub link: $OrgUser/$repository"
 Write-Host " mod VERSION: $ModVersion"
 if ($lastRelease) {
     Write-Host "Last Release: $lastRelease"
