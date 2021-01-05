@@ -2,7 +2,5 @@
 
 .*
 !/.gitattributes
-!/.gitconfig
-!/.github
 !/.gitignore
 !/.gitmodules
