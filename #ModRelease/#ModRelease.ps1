@@ -103,8 +103,8 @@ function New-GithubReleaseDescriptionAv {
     process {
         Import-Module PSAvalonia
 
-        $Xaml =
-        '<Window xmlns="https://github.com/avaloniaui"
+        $Xaml = @'
+        <Window xmlns="https://github.com/avaloniaui"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -116,7 +116,8 @@ function New-GithubReleaseDescriptionAv {
                 <Button Name="bCancel" Content="Cancel" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
                 <TextBox Name="tbRD" HorizontalAlignment="Left" TextWrapping="NoWrap" VerticalAlignment="Top" Height="760" Width="600" />
             </Grid>
-        </Window>'
+        </Window>
+'@
 
         $window = ConvertTo-AvaloniaWindow -Xaml $Xaml
         $bCancel = Find-AvaloniaControl -Name 'bCancel' -Window $Window
