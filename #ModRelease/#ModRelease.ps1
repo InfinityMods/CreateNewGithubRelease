@@ -169,7 +169,7 @@ $username = git config --get user.name
 
 $Token = $username + ':' + $apiKey
 $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
-$Headers = @{ Authorization = 'Basic {0}' -f $Base64Token }
+$Headers = @{ Accept = "application/vnd.github.v3+json" ; Authorization = 'Basic {0}' -f $Base64Token }
 
 [array]$dataReleases = Invoke-RestMethod -Uri "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method Get
 [array]$dataTags = ($dataReleases | Sort-Object -Property published_at -Descending).tag_name
@@ -265,7 +265,8 @@ $Body = @{
 } | ConvertTo-Json
 
 try {
-    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Body $Body -Method POST
+    $json = Invoke-RestMethod "https://api.github.com/repos/$OrgUser/$repository/releases" -Headers $Headers -Method POST -Body $Body 
+                               
     Write-Host
     Write-Host "New Release created: $($json.name)"
     Write-Host
