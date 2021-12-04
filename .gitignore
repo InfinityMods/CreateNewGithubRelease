@@ -2,5 +2,8 @@
 
 .*
 !/.gitattributes
+!/.gitconfig
+!/.github
 !/.gitignore
 !/.gitmodules
+!/.bgforge.yml
